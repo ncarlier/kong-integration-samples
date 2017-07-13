@@ -1,0 +1,34 @@
+---
+apis:
+  - name: sample_api
+    ensure: present
+    attributes:
+      uris: /sample
+      strip_uri: true
+      upstream_url: http://api.icndb.com/jokes/random
+    plugins:
+      - name: rate-limiting
+        attributes:
+          config:
+            minute: 5
+#      - name: oidc
+#        attributes:
+#          config:
+#            scope: openid
+#            response_type: code
+#            token_endpoint_auth_method: client_secret_post
+#            ssl_verify: no
+#            client_id: sample-api
+#            discovery: http://keycloak:8080/auth/realms/sample/.well-known/openid-configuration
+#            client_secret: 6bf3df22-e01a-4667-9fa0-c74698ee4cb3
+
+#      - name: udp-log
+#        attributes:
+#          config:
+#            host: logstash
+#            port: 5000
+#      - name: statsd
+#        attributes:
+#          config:
+#            host: statsd
+

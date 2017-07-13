@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  #######################################
+  # Postgres: The database used by Kong
+  #######################################
+  postgres:
+    image: "postgres:9.4"
+    restart: always
+    env_file: config/postgres.env
+#    volumes:
+#      - db-data:/var/lib/postgresql/data
+
+  #######################################
+  # Kong: The API Gateway
+  #######################################
+  kong:
+    build: ./dockerfiles/kong
+    image: "ncarlier/kong:latest"
+    restart: always
+    env_file: config/kong.env
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    ports:
+      - "${KONG_PORT:-8001}:8001"
+      - "${API_PORT:-8000}:8000"
+
+  #######################################
+  # Konga: Kong GUI
+  #######################################
+  konga:
+    image: "pantsel/konga:latest"
+    restart: always
+    env_file: config/konga.env
+    depends_on:
+      - kong
+    ports:
+      - "${KONGA_PORT:-1337}:1337"
+
+volumes:
+  conf-data:
+#  db-data:
+

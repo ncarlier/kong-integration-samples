@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  #######################################
+  # Keycloak: The IAM
+  #######################################
+  keycloak:
+    image: "jboss/keycloak:3.1.0.Final"
+    restart: always
+    env_file: config/keycloak.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+

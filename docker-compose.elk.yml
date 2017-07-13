@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  #######################################
+  # Elasticsearch: The log database
+  #######################################
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:5.5.0"
+    restart: always
+    env_file: config/elasticsearch.env
+
+  #######################################
+  # Logstash: The log ETL
+  #######################################
+  logstash:
+    build: ./dockerfiles/logstash
+    image: "ncarlier/logstash-elk:latest"
+    restart: always
+    env_file: config/logstash.env
+
+  #######################################
+  # Kibana: The log dashboard
+  #######################################
+  kibana:
+    image: "docker.elastic.co/kibana/kibana:5.5.0"
+    restart: always
+    env_file: config/kibana.env
+    depends_on:
+      - elasticsearch
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+

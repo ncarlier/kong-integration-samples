@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  #######################################
+  # Configure Keycloak
+  #######################################
+  config_keycloak:
+    build: ./dockerfiles/keycloak
+    image: "ncarlier/keycloak-config:latest"
+    entrypoint: "/bin/bash"
+    command: ["-c", "/configure-keycloak.sh"]
+    user: root
+    env_file: config/keycloak.env
+    volumes:
+      - conf-data:/var/opt/keycloak
+    labels:
+      - "traefik.enable=false"
+
+  #######################################
+  # Configure Kong
+  #######################################
+  config_kong:
+    build: ./dockerfiles/kongfig
+    image: "ncarlier/kong-config:latest"
+    entrypoint: "/bin/ash"
+    command: ["-c", "/configure-kong.sh"]
+    user: root
+    env_file: config/kongfig.env
+    labels:
+      - "traefik.enable=false"
+
