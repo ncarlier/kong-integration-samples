@@ -4,12 +4,31 @@ services:
   #######################################
   # Postgres: The database used by Kong
   #######################################
-  postgres:
-    image: "postgres:9.4"
+  kong-database:
+    image: "postgres:9.5"
     restart: always
-    env_file: config/postgres.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kong}
+      POSTGRES_DB: ${POSTGRES_DB:-kong}
 #    volumes:
 #      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  #######################################
+  # Kong database migration
+  #######################################
+  kong-migration:
+    image: "kong:latest"
+    command: "kong migrations up"
+    restart: on-failure
+    environment:
+      KONG_PG_HOST: kong-database
+    depends_on:
+      - kong-database
 
   #######################################
   # Kong: The API Gateway
@@ -18,11 +37,16 @@ services:
     build: ./dockerfiles/kong
     image: "ncarlier/kong:latest"
     restart: always
-    env_file: config/kong.env
+    environment:
+      KONG_PG_HOST: kong-database
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_CUSTOM_PLUGINS: oidc
     depends_on:
-      - postgres
+      - kong-database
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001"]
+      test: ["CMD", "curl", "-f", "http://kong:8001"]
       interval: 5s
       timeout: 2s
       retries: 15
@@ -36,7 +60,8 @@ services:
   konga:
     image: "pantsel/konga:latest"
     restart: always
-    env_file: config/konga.env
+    environment:
+      NODE_ENV: production
     depends_on:
       - kong
     ports:
