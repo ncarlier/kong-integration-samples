@@ -55,7 +55,7 @@ clean:
 
 ## Get Keycloak Realm key
 keys: clean
-	docker exec -i kongintegrationsamples_keycloak_1 /bin/bash < config/get-keycloak-realm-key.sh > keys.json
+	docker exec -i kong-integration-samples_keycloak_1 /bin/bash < config/get-keycloak-realm-key.sh > keys.json
 	jq ".keys[0].publicKey" -r keys.json > pub.tmp
 	sed -e "1 i -----BEGIN PUBLIC KEY-----" -e "$ a -----END PUBLIC KEY-----" pub.tmp > pub.pem
 	rm pub.tmp
@@ -69,7 +69,7 @@ keys: clean
 
 ## Get Keycloak client secret
 secret:
-	docker exec -i kongintegrationsamples_keycloak_1 /bin/bash < config/get-keycloak-client-secret.sh > secret.json
+	docker exec -i kong-integration-samples_keycloak_1 /bin/bash < config/get-keycloak-client-secret.sh > secret.json
 	cat secret.json
 .PHONY: secret
 

@@ -10,4 +10,4 @@ RUN apk -U add git unzip gcc libc-dev openssl-dev && \
     (cd $KONG_HOME/plugins/kong-oidc/ && luarocks make)
 
 # Patch NGINX config to set the session secret
-# RUN sed -i '/$upstream_scheme nil;/a \\tset $session_secret nil;' /usr/local/share/lua/5.1/kong/templates/nginx_kong.lua
+RUN sed -i '/rewrite_by_lua_block/i \\tset $session_secret nil;\n' /usr/local/share/lua/5.1/kong/templates/nginx_kong.lua

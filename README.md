@@ -96,7 +96,7 @@ $ http --form POST :8001/services/chuck/plugins \
   config.token_endpoint_auth_method=client_secret_post \
   config.ssl_verify=no \
   config.client_id=sample-api \
-  config.discovery="http://localhost:8080/auth/realms/sample/.well-known/openid-configuration" \
+  config.discovery="http://keycloak:8080/auth/realms/sample/.well-known/openid-configuration" \
   config.client_secret=$client_secret
 ```
 
