@@ -53,6 +53,10 @@ clean:
 	rm -f cert.pem pub.pem secret keys.json secret.json
 .PHONY: clean
 
+## View service logs ($$service)
+logs: compose-logs
+.PHONY: logs
+
 ## Get Keycloak Realm key
 keys: clean
 	docker exec -i kong-integration-samples_keycloak_1 /bin/bash < config/get-keycloak-realm-key.sh > keys.json
