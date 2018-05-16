@@ -256,7 +256,7 @@ Let's call the API several times:
 $ watch -n 2 http :8000/chuck
 ```
 
-Open your browser and go to the Grafana console (http://localhost:5601):
+Open your browser and go to the Kibana console (http://localhost:5601):
 
 Note that Kibana is very long to start the first time.
 
